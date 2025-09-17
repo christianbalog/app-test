@@ -50,7 +50,7 @@ jobs:
       run: |
         docker build -t cicd-test-app:${{ github.sha }} .
         docker build -t cicd-test-app:latest .
-        echo "IMAGE_DIGEST=$(docker inspect --format='{{index .RepoDigests 0}}' cicd-test-app:latest 2>/dev/null || docker images --digests cicd-test-app:latest --format '{{.Digest}}')" >> $GITHUB_ENV
+        docker inspect --format='{{index .RepoDigests 0}}' cicd-test-app:latest 2>/dev/null || docker images --digests cicd-test-app:latest --format '{{.Digest}}'
 
     - name: Test Docker image
       run: |
