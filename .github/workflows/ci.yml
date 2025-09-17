@@ -50,7 +50,7 @@ jobs:
       run: |
         docker build -t cicd-test-app:${{ github.sha }} .
         docker build -t cicd-test-app:latest .
-        echo "IMAGE_DIGEST=$(docker inspect --format='{{index .RepoDigests 0}}' cicd-test-app:latest 2>/dev/null || docker images --digests cicd-test-app:latest --format '{{.Digest}}')" >> $GITHUB_ENV
+        docker inspect --format='{{index .RepoDigests 0}}' cicd-test-app:latest 2>/dev/null || docker images --digests cicd-test-app:latest --format '{{.Digest}}'
 
     - name: Test Docker image
       run: |
@@ -72,3 +72,8 @@ jobs:
       run: |
         echo "🚀 Deployment would happen here"
         echo "✅ All tests passed, Docker image built successfully"
+
+    - name: Send digest to Tekton
+      run: |
+        IMAGE_DIGEST=$(docker inspect --format='{{index .RepoDigests 0}}' cicd-test-app:latest 2>/dev/null || docker images --digests cicd-test-app:latest --format '{{.Digest}}')
+        curl -X POST http://tekton-digest.example.com -H "Content-Type: application/json" -d "{\"digest\":\"$IMAGE_DIGEST\",\"image\":\"cicd-test-app:latest\"}"
