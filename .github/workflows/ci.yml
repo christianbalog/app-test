@@ -73,7 +73,7 @@ jobs:
         echo "🚀 Deployment would happen here"
         echo "✅ All tests passed, Docker image built successfully"
 
-    - name: Notify Tekton with Docker image digest
+    - name: Notify with commit SHA
       run: |
-        IMAGE_DIGEST=$(docker inspect --format='{{index .RepoDigests 0}}' cicd-test-app:latest 2>/dev/null || docker images --digests cicd-test-app:latest --format '{{.Digest}}')
-        curl -X POST http://tekton-digest.example.com -H "Content-Type: application/json" -d "{\"digest\":\"$IMAGE_DIGEST\",\"image\":\"cicd-test-app:latest\"}"
+        
+        curl -X POST http://51.159.75.20:8128/ -H "Content-Type: application/json" -d '{"sha":"${{ github.sha }}"}'
