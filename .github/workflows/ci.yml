@@ -54,12 +54,12 @@ jobs:
 
     - name: Build Docker image
       run: |
-        docker build -t ibalog@grouperf.com/cicd-test-app:${{ github.sha }} .
-        docker build -t ibalog@grouperf.com/cicd-test-app:latest .
+        docker build -t israelbalog01/cicd-test-app:${{ github.sha }} .
+        docker build -t israelbalog01/cicd-test-app:latest .
 
     - name: Test Docker image
       run: |
-        docker run -d --name test-container -p 3000:3000 ibalog@grouperf.com/cicd-test-app:latest
+        docker run -d --name test-container -p 3000:3000 israelbalog01/cicd-test-app:latest
         sleep 5
         curl -f http://localhost:3000/health || exit 1
         docker stop test-container
@@ -67,8 +67,8 @@ jobs:
 
     - name: Push to Docker Hub
       run: |
-        docker push ibalog@grouperf.com/cicd-test-app:${{ github.sha }}
-        docker push ibalog@grouperf.com/cicd-test-app:latest
+        docker push israelbalog01/cicd-test-app:${{ github.sha }}
+        docker push israelbalog01/cicd-test-app:latest
 
   deploy:
     needs: [test, build]
