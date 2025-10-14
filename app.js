@@ -6,7 +6,7 @@ app.use(express.json());
 
 app.get('/', (req, res) => {
   res.json({
-    message: 'Yo man! CI/CD Test App',
+    message: 'Yo gars! CI/CD Test App',
     timestamp: new Date().toISOString(),
     version: '1.0.0'
   });

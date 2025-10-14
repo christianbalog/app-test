@@ -11,7 +11,7 @@ describe('CI/CD Test App', () => {
       const response = await request(app).get('/');
 
       expect(response.status).toBe(200);
-      expect(response.body).toHaveProperty('message', 'Hello World! CI/CD Test App');
+      expect(response.body).toHaveProperty('message', 'Yo gars! CI/CD Test App');
       expect(response.body).toHaveProperty('timestamp');
       expect(response.body).toHaveProperty('version', '1.0.0');
     });
