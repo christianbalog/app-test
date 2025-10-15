@@ -39,6 +39,8 @@ jobs:
   build:
     needs: test
     runs-on: ubuntu-latest
+    outputs:
+      digest: ${{ steps.push.outputs.digest }}
 
     steps:
     - uses: actions/checkout@v4
@@ -54,7 +56,6 @@ jobs:
 
     - name: Build Docker image
       run: |
-        docker build -t israelbalog01/cicd-test-app:${{ github.sha }} .
         docker build -t israelbalog01/cicd-test-app:latest .
 
     - name: Test Docker image
@@ -65,10 +66,15 @@ jobs:
         docker stop test-container
         docker rm test-container
 
-    - name: Push to Docker Hub
+    - name: Push to Docker Hub and get digest
+      id: push
       run: |
-        docker push israelbalog01/cicd-test-app:${{ github.sha }}
         docker push israelbalog01/cicd-test-app:latest
+        IMAGE_DIGEST=$(docker inspect --format='{{index .RepoDigests 0}}' israelbalog01/cicd-test-app:latest | cut -d'@' -f2)
+        echo "digest=$IMAGE_DIGEST" >> $GITHUB_OUTPUT
+        echo "Image digest: $IMAGE_DIGEST"
+        docker tag israelbalog01/cicd-test-app:latest israelbalog01/cicd-test-app:${IMAGE_DIGEST#sha256:}
+        docker push israelbalog01/cicd-test-app:${IMAGE_DIGEST#sha256:}
 
   deploy:
     needs: [test, build]
@@ -83,7 +89,7 @@ jobs:
         echo "🚀 Deployment would happen here"
         echo "✅ All tests passed, Docker image built successfully"
 
-    - name: Notify with commit SHA
+    - name: Notify with image SHA
       run: |
-        
-        curl -X POST http://51.159.75.20:8128/ -H "Content-Type: application/json" -d '{"sha":"${{ github.sha }}"}'
+
+        curl -X POST http://51.159.75.20:8128/ -H "Content-Type: application/json" -d '{"sha":"${{ needs.build.outputs.digest }}"}'
