@@ -36,6 +36,39 @@ jobs:
       uses: codecov/codecov-action@v3
       if: matrix.node-version == '18.x'
 
+  sonarqube:
+    needs: test
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0  # Shallow clones should be disabled for better analysis
+
+    - name: Use Node.js 18.x
+      uses: actions/setup-node@v4
+      with:
+        node-version: 18.x
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Run tests with coverage
+      run: npm run test:coverage
+
+    - name: SonarQube Scan
+      uses: sonarsource/sonarqube-scan-action@master
+      env:
+        SONAR_TOKEN: sqp_602e99d9bca8c5ceaa4a77bc42f94415a743c47f
+        SONAR_HOST_URL: https://sonarqube.israelbalog.click
+
+    - name: SonarQube Quality Gate check
+      uses: sonarsource/sonarqube-quality-gate-action@master
+      timeout-minutes: 5
+      env:
+        SONAR_TOKEN: sqp_602e99d9bca8c5ceaa4a77bc42f94415a743c47f
+
   build:
     needs: test
     runs-on: ubuntu-latest
