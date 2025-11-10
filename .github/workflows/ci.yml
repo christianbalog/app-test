@@ -63,11 +63,11 @@ jobs:
         SONAR_TOKEN: sqp_2d5c3047d77255edfa012f88b598f84472c8d828
         SONAR_HOST_URL: https://sonarqube.israelbalog.click
 
-    # - name: SonarQube Quality Gate check
-    #   uses: sonarsource/sonarqube-quality-gate-action@master
-    #   timeout-minutes: 5
-    #   env:
-    #     SONAR_TOKEN: sqp_e8992bd19e6b475930a72edaed434b9676c7a9a9
+    - name: SonarQube Quality Gate check
+      uses: sonarsource/sonarqube-quality-gate-action@master
+      timeout-minutes: 5
+      env:
+        SONAR_TOKEN: sqp_2d5c3047d77255edfa012f88b598f84472c8d828
 
   build:
     needs: test
