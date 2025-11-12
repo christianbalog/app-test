@@ -8,7 +8,7 @@ app.get('/', (req, res) => {
   res.json({
     message: 'hey CI/CD Test App',
     timestamp: new Date().toISOString(),
-    version: '1.0.1'
+    version: '1.0.0'
   });
 });
 
